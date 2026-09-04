@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>MLB Stadium Tracker</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚾</text></svg>">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="app-header">
+  <div class="header-inner">
+    <h1 id="app-title">⚾ <span id="tracker-name-display">My MLB Stadium Tracker</span></h1>
+    <p class="subtitle">Track every ballpark. Collect every stamp. Watch every game.</p>
+  </div>
+</header>
+
+<section class="stats-bar" id="stats-bar" aria-label="Overall stats">
+  <div class="stat-card">
+    <div class="stat-value" id="stat-visited">0<span class="stat-total">/30</span></div>
+    <div class="stat-label">Parks Visited</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value" id="stat-games">0</div>
+    <div class="stat-label">Games Seen</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value" id="stat-states">0</div>
+    <div class="stat-label">States Visited</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value" id="stat-badges">0</div>
+    <div class="stat-label">Badges Earned</div>
+  </div>
+  <div class="stat-card stat-progress-card">
+    <div class="progress-track"><div class="progress-fill" id="stat-progress-fill"></div></div>
+    <div class="stat-label">Ballpark Quest Progress</div>
+  </div>
+</section>
+
+<nav class="tabs" id="tabs" role="tablist">
+  <button class="tab-btn active" data-tab="map" role="tab" aria-selected="true">🗺️ Map</button>
+  <button class="tab-btn" data-tab="passport" role="tab" aria-selected="false">📔 Passport</button>
+  <button class="tab-btn" data-tab="badges" role="tab" aria-selected="false">🏅 Badges</button>
+  <button class="tab-btn" data-tab="settings" role="tab" aria-selected="false">⚙️ Settings</button>
+</nav>
+
+<main>
+  <section id="tab-map" class="tab-panel active">
+    <div class="map-legend">
+      <span class="legend-item"><span class="pin-dot visited-dot"></span> Visited</span>
+      <span class="legend-item"><span class="pin-dot"></span> Not visited yet</span>
+    </div>
+    <div id="map"></div>
+  </section>
+
+  <section id="tab-passport" class="tab-panel">
+    <div class="passport-header">
+      <h2>📔 Ballpark Passport</h2>
+      <p>Every park you visit gets a stamp. Collect all 30!</p>
+    </div>
+    <div class="passport-grid" id="passport-grid"></div>
+  </section>
+
+  <section id="tab-badges" class="tab-panel">
+    <div class="passport-header">
+      <h2>🏅 Badges</h2>
+      <p>Special badges you can unlock as you visit more parks.</p>
+    </div>
+    <div class="badges-grid" id="badges-grid"></div>
+  </section>
+
+  <section id="tab-settings" class="tab-panel">
+    <div class="settings-card">
+      <h2>⚙️ Settings</h2>
+
+      <div class="settings-group">
+        <label for="tracker-name-input">Tracker name</label>
+        <input type="text" id="tracker-name-input" placeholder="e.g. Jake's MLB Stadium Tracker" maxlength="60">
+        <button class="btn btn-secondary" id="save-name-btn">Save Name</button>
+      </div>
+
+      <div class="settings-group">
+        <label for="sync-code-input">Sync code <span class="hint">(use the same code on your other devices to see the same data everywhere)</span></label>
+        <div class="sync-row">
+          <input type="text" id="sync-code-input" placeholder="e.g. smith-family-2026" maxlength="40">
+          <button class="btn btn-secondary" id="save-code-btn">Connect</button>
+          <button class="btn btn-secondary" id="new-code-btn" title="Generate a random code">🎲 Random</button>
+        </div>
+        <p class="sync-status" id="sync-status">Checking sync status…</p>
+      </div>
+
+      <div class="settings-group">
+        <label>Backup</label>
+        <div class="sync-row">
+          <button class="btn btn-secondary" id="export-btn">⬇️ Export Backup</button>
+          <label class="btn btn-secondary file-btn">
+            ⬆️ Import Backup
+            <input type="file" id="import-input" accept="application/json" hidden>
+          </label>
+        </div>
+        <p class="hint">Exports a small file with everything you've checked off — handy to keep safe, or move data between devices without a sync code.</p>
+      </div>
+
+      <div class="settings-group danger-group">
+        <label>Danger zone</label>
+        <button class="btn btn-danger" id="reset-btn">🗑️ Clear All Data</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal" id="stadium-modal" role="dialog" aria-modal="true">
+    <button class="modal-close" id="modal-close" aria-label="Close">✕</button>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Leaflet -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+<!-- Firebase (optional cross-device sync — app works fine without it) -->
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
+
+<script src="js/firebase-config.js"></script>
+<script src="js/stadiums-data.js"></script>
+<script src="js/badges-data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
