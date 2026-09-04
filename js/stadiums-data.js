@@ -10,7 +10,7 @@ const STADIUMS = [
   ], imageUrls: [
     "https://en.wikipedia.org/wiki/Special:FilePath/File:Yankee_Stadium_Panorama.JPG",
     "https://en.wikipedia.org/wiki/Special:FilePath/File:Yankee_Stadium_aerial_from_Blackhawk.jpg"
-  ], mapColor: "#132448", logoUrl: "https://en.wikipedia.org/wiki/Special:FilePath/File:New_York_Yankees_logo.svg" },
+  ], mapColor: "#132448", logoUrl: "https://en.wikipedia.org/wiki/Special:FilePath/File:NewYorkYankees_caplogo.svg" },
 
   { id: "fenway-park", team: "Boston Red Sox", stadiumName: "Fenway Park", city: "Boston", state: "MA", lat: 42.3467, lng: -71.0972, opened: 1912, capacity: 37755, roofType: "Open Air", league: "AL", division: "AL East", funFacts: [
     "Fenway is the oldest ballpark in Major League Baseball, opening the same week the Titanic sank in 1912.",
