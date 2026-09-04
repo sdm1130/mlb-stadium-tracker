@@ -103,7 +103,7 @@ const BADGES = [
   {
     id: "al-complete",
     monogram: "AL",
-    chipColor: "#17493B",
+    chipColor: "#0C2340",
     name: "American League Champ",
     desc: "Visit all 15 American League ballparks.",
     check: ctx => leagueComplete(ctx, "AL")
@@ -111,7 +111,7 @@ const BADGES = [
   {
     id: "nl-complete",
     monogram: "NL",
-    chipColor: "#17493B",
+    chipColor: "#0C2340",
     name: "National League Champ",
     desc: "Visit all 15 National League ballparks.",
     check: ctx => leagueComplete(ctx, "NL")

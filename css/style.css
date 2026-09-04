@@ -7,8 +7,8 @@
   --border: #E5E7EB;
   --border-strong: #D1D5DB;
 
-  --primary: #17493B;      /* deep forest green */
-  --primary-light: #1F5C4B;
+  --primary: #0C2340;      /* Yankees navy */
+  --primary-light: #1D3A63;
   --accent: #B8862F;       /* muted gold/bronze */
   --accent-light: #E8C877;
   --danger: #B3261E;
@@ -40,7 +40,7 @@ h1, h2, h3 { font-family: 'Manrope', system-ui, sans-serif; margin: 0; letter-sp
 
 /* ---------- Header ---------- */
 .app-header {
-  background: linear-gradient(150deg, var(--primary) 0%, #0E2E25 100%);
+  background: linear-gradient(150deg, var(--primary) 0%, #050E1C 100%);
   color: white;
   padding: 30px 20px 26px;
   text-align: center;
@@ -208,7 +208,7 @@ main { max-width: 1120px; margin: 22px auto 60px; padding: 0 16px; }
 }
 .stadium-photos-wrap {
   position: relative; border-radius: 18px 18px 0 0; overflow: hidden; min-height: 240px;
-  background: linear-gradient(150deg, var(--primary) 0%, #0E2E25 100%);
+  background: linear-gradient(150deg, var(--primary) 0%, #050E1C 100%);
   display: flex; align-items: center; justify-content: center;
 }
 .stadium-photos-wrap .fallback-icon { position: absolute; width: 46px; height: 46px; color: rgba(255,255,255,0.35); z-index: 0; }
@@ -270,7 +270,7 @@ main { max-width: 1120px; margin: 22px auto 60px; padding: 0 16px; }
 .add-game-form input, .add-game-form textarea {
   width: 100%; padding: 9px 11px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-family: inherit; font-size: 0.88rem; color: var(--ink);
 }
-.add-game-form input:focus, .add-game-form textarea:focus, .settings-group input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(23,73,59,0.12); }
+.add-game-form input:focus, .add-game-form textarea:focus, .settings-group input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(12,35,64,0.14); }
 .add-game-form textarea { grid-column: 1 / -1; resize: vertical; min-height: 44px; }
 .add-game-form .full { grid-column: 1 / -1; }
 

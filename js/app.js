@@ -188,7 +188,7 @@ function initMap() {
 }
 
 function makePinIcon(stadium, visited) {
-  const color = stadium.mapColor || "#17493B";
+  const color = stadium.mapColor || "#0C2340";
   const abbr = TEAM_ABBR[stadium.id] || "";
   return L.divIcon({
     className: "",
@@ -208,7 +208,7 @@ function makePopupHtml(stadium) {
     <div class="popup-head">
       <div class="popup-logo-wrap">
         <img src="${stadium.logoUrl || ""}" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
-        <span style="display:none; font-size:10px; font-weight:800; color:${stadium.mapColor || "#17493B"};">${abbr}</span>
+        <span style="display:none; font-size:10px; font-weight:800; color:${stadium.mapColor || "#0C2340"};">${abbr}</span>
       </div>
       <div>
         <div class="popup-title">${escapeHtml(stadium.stadiumName)}</div>
@@ -278,7 +278,7 @@ function renderModalBody(stadiumId) {
       <div class="modal-head">
         <div class="modal-logo-wrap">
           <img src="${stadium.logoUrl || ""}" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
-          <span style="display:none; font-size:11px; font-weight:800; color:${stadium.mapColor || "#17493B"};">${abbr}</span>
+          <span style="display:none; font-size:11px; font-weight:800; color:${stadium.mapColor || "#0C2340"};">${abbr}</span>
         </div>
         <div>
           <h2>${escapeHtml(stadium.stadiumName)}</h2>
@@ -391,7 +391,7 @@ function renderPassport() {
       const abbr = TEAM_ABBR[stadium.id] || "";
       return `
         <div class="stamp-card ${visited ? "" : "unvisited"}" data-open-stadium="${stadium.id}">
-          <div class="stamp-circle" style="--stamp-color:${stadium.mapColor || "#17493B"}">
+          <div class="stamp-circle" style="--stamp-color:${stadium.mapColor || "#0C2340"}">
             <img src="${stadium.logoUrl || ""}" alt="" onerror="this.parentElement.classList.add('logo-failed')">
             <span class="stamp-fallback">${abbr}</span>
           </div>
