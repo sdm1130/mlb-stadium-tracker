@@ -104,6 +104,7 @@ js/stadiums-data.js    Data for all 30 ballparks (facts, photos, coords, etc.)
 js/badges-data.js      Badge/achievement definitions
 js/firebase-config.js  Optional sync configuration (see above)
 js/app.js              App logic (map, modal, passport, badges, sync)
+assets/logos/          Team logo SVGs used on map pins, popups, and passport stamps
 ```
 
 ## Notes on data
@@ -116,3 +117,9 @@ js/app.js              App logic (map, modal, passport, badges, sync)
 - Stadium photos link directly to Wikimedia Commons images and require an
   internet connection to display; if a photo ever fails to load, the app
   shows a friendly placeholder instead of a broken image.
+- Team logos are bundled locally in `assets/logos/` (one SVG per team, named
+  after the stadium's id in `stadiums-data.js`) so pins never depend on an
+  external link staying up. These are official team logos/trademarks, used
+  here purely for personal, non-commercial fan identification — same basis
+  most fan sites and apps rely on. If a logo ever needs swapping, just
+  replace the matching SVG file; no code changes needed.
