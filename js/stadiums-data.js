@@ -170,7 +170,7 @@ const STADIUMS = [
   ], imageUrls: [
     "https://en.wikipedia.org/wiki/Special:FilePath/File:LoanDepot_Park.jpg",
     "https://en.wikipedia.org/wiki/Special:FilePath/File:LoanDepot_Park_2024.jpg"
-  ], mapColor: "#00A3E0", logoUrl: "https://en.wikipedia.org/wiki/Special:FilePath/File:Miami_Marlins_logo.svg" },
+  ], mapColor: "#00A3E0", logoUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/File:Miami_Marlins_logo.svg" },
 
   { id: "citi-field", team: "New York Mets", stadiumName: "Citi Field", city: "Queens", state: "NY", lat: 40.7571, lng: -73.8458, opened: 2009, capacity: 41922, roofType: "Open Air", league: "NL", division: "NL East", funFacts: [
     "A giant apple rises out of a black top hat behind the outfield wall every time the Mets hit a home run — a tribute to the old Shea Stadium Home Run Apple.",
