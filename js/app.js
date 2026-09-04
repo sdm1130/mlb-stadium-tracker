@@ -11,6 +11,35 @@ const LS_KEYS = {
   data: "mlbTracker.data"
 };
 
+// Fallback monogram shown on a pin/stamp if a team's logo image fails to load.
+const TEAM_ABBR = {
+  "yankee-stadium": "NYY", "fenway-park": "BOS", "rogers-centre": "TOR",
+  "camden-yards": "BAL", "tropicana-field": "TB", "rate-field": "CWS",
+  "progressive-field": "CLE", "comerica-park": "DET", "kauffman-stadium": "KC",
+  "target-field": "MIN", "daikin-park": "HOU", "angel-stadium": "LAA",
+  "sutter-health-park": "ATH", "t-mobile-park": "SEA", "globe-life-field": "TEX",
+  "truist-park": "ATL", "loandepot-park": "MIA", "citi-field": "NYM",
+  "citizens-bank-park": "PHI", "nationals-park": "WSH", "wrigley-field": "CHC",
+  "great-american-ball-park": "CIN", "american-family-field": "MIL", "pnc-park": "PIT",
+  "busch-stadium": "STL", "chase-field": "ARI", "coors-field": "COL",
+  "dodger-stadium": "LAD", "petco-park": "SD", "oracle-park": "SF"
+};
+
+// Small inline icon set (stroke-based, consistent style) used throughout the UI.
+const ICONS = {
+  pin: `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><polygon points="8,12 16,12 12,20"/></svg>`,
+  calendar: `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/></svg>`,
+  users: `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><polygon points="3,20 9,13 15,20"/><circle cx="17" cy="9" r="2.2"/><polygon points="13,20 17,14 21,20"/></svg>`,
+  umbrella: `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12A8 8 0 0 1 20 12"/><line x1="12" y1="12" x2="12" y2="19"/><path d="M9 19a3 3 0 0 0 6 0"/></svg>`,
+  compass: `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polygon points="12,7 14,12 12,17 10,12"/></svg>`,
+  info: `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="11" x2="12" y2="16"/><circle cx="12" cy="7.5" r="0.9" fill="currentColor" stroke="none"/></svg>`,
+  trash: `<svg class="icon icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/><path d="M6 7l1 13a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-13"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>`,
+  check: `<svg class="icon icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4,12 9,17 20,6"/></svg>`,
+  lock: `<svg class="icon icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>`,
+  plus: `<svg class="icon icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>`,
+  stadium: `<svg class="fallback-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="12" rx="9" ry="6"/><ellipse cx="12" cy="12" rx="4" ry="2.4"/></svg>`
+};
+
 const DEFAULT_NAME = "My MLB Stadium Tracker";
 
 let trackerName = localStorage.getItem(LS_KEYS.name) || DEFAULT_NAME;
@@ -159,21 +188,33 @@ function initMap() {
 }
 
 function makePinIcon(stadium, visited) {
+  const color = stadium.mapColor || "#17493B";
+  const abbr = TEAM_ABBR[stadium.id] || "";
   return L.divIcon({
     className: "",
-    html: `<div class="stadium-pin-icon${visited ? " visited" : ""}" style="background:${stadium.mapColor || "#14213d"}">
-             <span class="pin-emoji">⚾</span>
+    html: `<div class="pin-chip${visited ? " visited" : ""}" style="--pin-color:${color}">
+             <img src="${stadium.logoUrl || ""}" alt="" onerror="this.parentElement.classList.add('logo-failed')">
+             <span class="pin-fallback">${abbr}</span>
            </div>`,
-    iconSize: [26, 26],
-    iconAnchor: [13, 26],
-    popupAnchor: [0, -26]
+    iconSize: [30, 30],
+    iconAnchor: [15, 15],
+    popupAnchor: [0, -16]
   });
 }
 
 function makePopupHtml(stadium) {
+  const abbr = TEAM_ABBR[stadium.id] || "";
   return `
-    <div class="popup-title">${stadium.stadiumName}</div>
-    <div class="popup-team">${stadium.team} &middot; ${stadium.city}, ${stadium.state}</div>
+    <div class="popup-head">
+      <div class="popup-logo-wrap">
+        <img src="${stadium.logoUrl || ""}" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+        <span style="display:none; font-size:10px; font-weight:800; color:${stadium.mapColor || "#17493B"};">${abbr}</span>
+      </div>
+      <div>
+        <div class="popup-title">${escapeHtml(stadium.stadiumName)}</div>
+        <div class="popup-team">${escapeHtml(stadium.team)} &middot; ${escapeHtml(stadium.city)}, ${escapeHtml(stadium.state)}</div>
+      </div>
+    </div>
     <button class="popup-open-btn" id="popup-open-${stadium.id}">View Details</button>
   `;
 }
@@ -208,6 +249,7 @@ function renderModalBody(stadiumId) {
   const stadium = STADIUMS.find(s => s.id === stadiumId);
   if (!stadium) return;
   const entry = getEntry(stadiumId);
+  const abbr = TEAM_ABBR[stadium.id] || "";
 
   const photosHtml = (stadium.imageUrls || []).map(url =>
     `<img src="${url}" alt="${escapeHtml(stadium.stadiumName)}" loading="lazy" onerror="this.style.display='none'">`
@@ -221,30 +263,39 @@ function renderModalBody(stadiumId) {
             ${g.score ? `<div class="game-note">Final: ${escapeHtml(g.score)}</div>` : ""}
             ${g.note ? `<div class="game-note">${escapeHtml(g.note)}</div>` : ""}
           </div>
-          <button data-remove-game="${g.id}" title="Remove">🗑️</button>
+          <button data-remove-game="${g.id}" title="Remove">${ICONS.trash}</button>
         </li>
       `).join("")
-    : `<p class="game-note" style="color:var(--muted); margin: 0 0 10px;">No games logged yet.</p>`;
+    : `<p class="empty-note">No games logged yet.</p>`;
 
   document.getElementById("modal-body").innerHTML = `
     <div class="stadium-photos-wrap">
+      ${ICONS.stadium}
       <div class="stadium-photos">${photosHtml}</div>
       ${(stadium.imageUrls || []).length > 1 ? `<span class="photo-hint">swipe for more photos →</span>` : ""}
     </div>
     <div class="modal-content-inner">
-      <h2>${escapeHtml(stadium.stadiumName)}</h2>
-      <div class="modal-team-line">🏟️ Home of the ${escapeHtml(stadium.team)}</div>
-
-      <div class="modal-tag-row">
-        <span class="tag">📍 ${escapeHtml(stadium.city)}, ${escapeHtml(stadium.state)}</span>
-        <span class="tag">📅 Opened ${stadium.opened}</span>
-        <span class="tag">👥 Seats ${Number(stadium.capacity).toLocaleString()}</span>
-        <span class="tag">☂️ ${escapeHtml(stadium.roofType)}</span>
-        <span class="tag">⚾ ${escapeHtml(stadium.division)}</span>
+      <div class="modal-head">
+        <div class="modal-logo-wrap">
+          <img src="${stadium.logoUrl || ""}" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+          <span style="display:none; font-size:11px; font-weight:800; color:${stadium.mapColor || "#17493B"};">${abbr}</span>
+        </div>
+        <div>
+          <h2>${escapeHtml(stadium.stadiumName)}</h2>
+          <div class="modal-team-line">Home of the ${escapeHtml(stadium.team)}</div>
+        </div>
       </div>
 
-      <div class="fun-facts-box">
-        <h3>🎉 Fun Facts</h3>
+      <div class="modal-tag-row">
+        <span class="tag">${ICONS.pin} ${escapeHtml(stadium.city)}, ${escapeHtml(stadium.state)}</span>
+        <span class="tag">${ICONS.calendar} Opened ${stadium.opened}</span>
+        <span class="tag">${ICONS.users} Seats ${Number(stadium.capacity).toLocaleString()}</span>
+        <span class="tag">${ICONS.umbrella} ${escapeHtml(stadium.roofType)}</span>
+        <span class="tag">${ICONS.compass} ${escapeHtml(stadium.division)}</span>
+      </div>
+
+      <div class="section-box">
+        <h3>${ICONS.info} Fun Facts</h3>
         <ul>${(stadium.funFacts || []).map(f => `<li>${escapeHtml(f)}</li>`).join("")}</ul>
       </div>
 
@@ -253,33 +304,33 @@ function renderModalBody(stadiumId) {
           <input type="checkbox" id="visited-toggle" ${entry.visited ? "checked" : ""}>
           <span class="slider"></span>
         </label>
-        <label for="visited-toggle">${entry.visited ? "✅ You've been here!" : "Mark as visited"}</label>
+        <label for="visited-toggle">${entry.visited ? "You've been here" : "Mark as visited"}</label>
       </div>
 
       <div class="games-section">
-        <h3>📝 Games You Saw Here</h3>
+        <h3>${ICONS.calendar} Games You Saw Here</h3>
         <ul class="game-log-list">${gamesHtml}</ul>
 
         <form class="add-game-form" id="add-game-form">
           <div class="form-row">
             <div>
-              <label style="font-size:0.78rem; font-weight:700;">Date</label>
+              <label class="field-label">Date</label>
               <input type="date" name="date" required>
             </div>
             <div>
-              <label style="font-size:0.78rem; font-weight:700;">Opponent</label>
+              <label class="field-label">Opponent</label>
               <input type="text" name="opponent" placeholder="e.g. Red Sox">
             </div>
             <div class="full">
-              <label style="font-size:0.78rem; font-weight:700;">Final Score (optional)</label>
+              <label class="field-label">Final Score (optional)</label>
               <input type="text" name="score" placeholder="e.g. Yankees 5 - Red Sox 3">
             </div>
             <div class="full">
-              <label style="font-size:0.78rem; font-weight:700;">Notes (optional)</label>
+              <label class="field-label">Notes (optional)</label>
               <textarea name="note" placeholder="Caught a foul ball! Sat behind home plate. etc."></textarea>
             </div>
           </div>
-          <button type="submit" class="btn btn-primary">➕ Add Game</button>
+          <button type="submit" class="btn btn-primary">${ICONS.plus} Add Game</button>
         </form>
       </div>
     </div>
@@ -300,7 +351,7 @@ function renderModalBody(stadiumId) {
       score: fd.get("score") || "",
       note: fd.get("note") || ""
     });
-    showToast("Game added! ⚾");
+    showToast("Game added.");
   });
 
   document.getElementById("modal-body").querySelectorAll("[data-remove-game]").forEach(btn => {
@@ -337,9 +388,13 @@ function renderPassport() {
       const entry = stadiumData[stadium.id];
       const visited = !!(entry && entry.visited);
       const firstGame = entry && entry.games.length ? entry.games[entry.games.length - 1] : null;
+      const abbr = TEAM_ABBR[stadium.id] || "";
       return `
         <div class="stamp-card ${visited ? "" : "unvisited"}" data-open-stadium="${stadium.id}">
-          <div class="stamp-circle" style="background:${stadium.mapColor || "#14213d"}">⚾</div>
+          <div class="stamp-circle" style="--stamp-color:${stadium.mapColor || "#17493B"}">
+            <img src="${stadium.logoUrl || ""}" alt="" onerror="this.parentElement.classList.add('logo-failed')">
+            <span class="stamp-fallback">${abbr}</span>
+          </div>
           <div class="stamp-team">${escapeHtml(stadium.team)}</div>
           ${visited && firstGame ? `<div class="stamp-date">${formatDate(firstGame.date)}</div>` : ""}
           ${visited && entry.games.length ? `<div class="stamp-games">${entry.games.length} game${entry.games.length > 1 ? "s" : ""} logged</div>` : ""}
@@ -362,9 +417,17 @@ function renderBadges() {
   const grid = document.getElementById("badges-grid");
   grid.innerHTML = BADGES.map(b => {
     const earned = b.check(ctx);
+    let iconHtml;
+    if (!earned) {
+      iconHtml = `<div class="badge-icon">${ICONS.lock}</div>`;
+    } else if (b.monogram) {
+      iconHtml = `<div class="badge-icon monogram" style="background:${b.chipColor}">${b.monogram}</div>`;
+    } else {
+      iconHtml = `<div class="badge-icon">${b.icon}</div>`;
+    }
     return `
       <div class="badge-card ${earned ? "" : "locked"}">
-        <div class="badge-icon">${earned ? b.icon : "🔒"}</div>
+        ${iconHtml}
         <div>
           <div class="badge-name">${escapeHtml(b.name)}</div>
           <div class="badge-desc">${escapeHtml(b.desc)}</div>
@@ -410,7 +473,7 @@ function initSettings() {
     trackerName = val || DEFAULT_NAME;
     localStorage.setItem(LS_KEYS.name, trackerName);
     document.getElementById("tracker-name-display").textContent = trackerName;
-    showToast("Name saved!");
+    showToast("Name saved.");
   });
 
   document.getElementById("save-code-btn").addEventListener("click", () => {
@@ -461,7 +524,7 @@ function exportBackup() {
   a.click();
   a.remove();
   URL.revokeObjectURL(url);
-  showToast("Backup downloaded!");
+  showToast("Backup downloaded.");
 }
 
 function importBackup(e) {
@@ -482,7 +545,7 @@ function importBackup(e) {
         saveLocalData();
         pushToFirestore();
         fullRerender();
-        showToast("Backup imported!");
+        showToast("Backup imported.");
       } else {
         alert("That doesn't look like a valid backup file.");
       }
@@ -625,12 +688,12 @@ function updateSyncStatusUi(state) {
   const firebaseConfigured = typeof FIREBASE_ENABLED !== "undefined" && FIREBASE_ENABLED && FIREBASE_CONFIG.apiKey;
 
   if (!firebaseConfigured) {
-    el.textContent = "💾 Saving on this device only. See README.md to turn on cross-device sync (free, ~5 min setup).";
+    el.textContent = "Saving on this device only. See README.md to turn on cross-device sync (free, ~5 min setup).";
     el.className = "sync-status";
     return;
   }
   if (state === "error") {
-    el.textContent = "⚠️ Couldn't connect to sync. Saving on this device only for now.";
+    el.textContent = "Couldn't connect to sync. Saving on this device only for now.";
     el.className = "sync-status";
     return;
   }
@@ -640,7 +703,7 @@ function updateSyncStatusUi(state) {
     return;
   }
   if (state === "ok") {
-    el.textContent = `✅ Synced! Use code "${syncCode}" on your other devices to see the same data.`;
+    el.textContent = `Synced — use code "${syncCode}" on your other devices to see the same data.`;
     el.className = "sync-status ok";
     return;
   }
