@@ -193,8 +193,11 @@ function makePinIcon(stadium, visited) {
   return L.divIcon({
     className: "",
     html: `<div class="pin-chip${visited ? " visited" : ""}" style="--pin-color:${color}">
-             <img src="${stadium.logoUrl || ""}" alt="" onerror="this.parentElement.classList.add('logo-failed')">
-             <span class="pin-fallback">${abbr}</span>
+             <div class="pin-face">
+               <img src="${stadium.logoUrl || ""}" alt="" onerror="this.parentElement.classList.add('logo-failed')">
+               <span class="pin-fallback">${abbr}</span>
+             </div>
+             ${visited ? `<span class="pin-visited-badge">${ICONS.check}</span>` : ""}
            </div>`,
     iconSize: [30, 30],
     iconAnchor: [15, 15],

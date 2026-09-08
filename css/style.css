@@ -127,7 +127,11 @@ main { max-width: 1120px; margin: 22px auto 60px; padding: 0 16px; }
   width: 16px; height: 16px; border-radius: 50%; display: inline-block;
   background: #fff; border: 2px solid var(--border-strong);
 }
-.legend-chip.visited { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(184, 134, 47, 0.25); }
+.legend-chip.visited {
+  border: none;
+  background: var(--accent);
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--accent);
+}
 
 #map {
   width: 100%;
@@ -146,16 +150,31 @@ main { max-width: 1120px; margin: 22px auto 60px; padding: 0 16px; }
   box-shadow: 0 1px 4px rgba(0,0,0,0.35);
   display: flex; align-items: center; justify-content: center;
   position: relative;
-  overflow: hidden;
 }
-.pin-chip.visited { box-shadow: 0 0 0 3px rgba(184, 134, 47, 0.55), 0 1px 4px rgba(0,0,0,0.35); }
-.pin-chip img { width: 68%; height: 68%; object-fit: contain; display: block; }
+.pin-chip.visited {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px #fff, 0 0 0 5px var(--accent), 0 1px 4px rgba(0,0,0,0.4);
+  transform: scale(1.12);
+}
+.pin-face {
+  width: 100%; height: 100%; border-radius: 50%; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+.pin-face img { width: 68%; height: 68%; object-fit: contain; display: block; }
 .pin-fallback {
   display: none; align-items: center; justify-content: center;
   width: 100%; height: 100%; font-size: 9px; font-weight: 800;
   color: var(--pin-color, var(--primary)); background: #fff; letter-spacing: 0.02em;
 }
-.pin-chip.logo-failed .pin-fallback { display: flex; }
+.pin-face.logo-failed .pin-fallback { display: flex; }
+.pin-visited-badge {
+  position: absolute; bottom: -4px; right: -4px;
+  width: 15px; height: 15px; border-radius: 50%;
+  background: var(--accent); border: 2px solid #fff;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; box-shadow: 0 1px 2px rgba(0,0,0,0.4);
+}
+.pin-visited-badge .icon { width: 9px; height: 9px; }
 
 .leaflet-popup-content-wrapper { border-radius: 12px; }
 .leaflet-popup-content { font-family: 'Manrope', sans-serif; margin: 12px 14px; }
