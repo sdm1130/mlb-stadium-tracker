@@ -13,12 +13,12 @@
 */
 
 const FIREBASE_CONFIG = {
-  apiKey: "",
-  authDomain: "",
-  projectId: "",
-  storageBucket: "",
-  messagingSenderId: "",
-  appId: ""
+  apiKey: "AIzaSyDSrsP1cUWHXRAxABMcwijU6vOMwb4o8aI",
+  authDomain: "ethan-mlb-stadium-tracker.firebaseapp.com",
+  projectId: "ethan-mlb-stadium-tracker",
+  storageBucket: "ethan-mlb-stadium-tracker.firebasestorage.app",
+  messagingSenderId: "1045199256250",
+  appId: "1:1045199256250:web:09b7c79823c73760432083"
 };
 
-const FIREBASE_ENABLED = false;
+const FIREBASE_ENABLED = true;
