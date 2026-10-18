@@ -7,7 +7,10 @@ unlockable badges, and an overall stats bar.
 
 It's a plain static site (HTML/CSS/JS) — no build step, no server required.
 
-**Live at: <https://sdm1130.github.io/mlb-stadium-tracker/>**
+**Live at: <https://stadiumtracker.stevenmurphy.net>** (Cloudflare Access
+login). The old GitHub Pages copy at
+<https://sdm1130.github.io/mlb-stadium-tracker/> still runs for now but no
+longer gets updates.
 
 ## Features
 
@@ -89,17 +92,26 @@ data between devices manually instead.
 
 ## Deployment
 
-This project is hosted on **GitHub Pages**, configured to deploy from the
-**`claude/mlb-stadium-tracker-b426yg`** branch (not `main`). Any push to that
-branch rebuilds the live site automatically within about a minute. The
-repository is public, which is required for free GitHub Pages hosting on a
-free GitHub plan (Pages on a private repo needs a paid plan) — there are no
-secrets in this codebase, so that's a safe tradeoff (Firebase web config
-values are meant to be public; see the note in `js/firebase-config.js`).
+Since 2026-10-18 the tracker is hosted on **Coolify** on a home server, at
+<https://stadiumtracker.stevenmurphy.net>, behind a Cloudflare Access login.
+It's built from the `Dockerfile` on the **`main`** branch (nginx serving the
+static files), and every change to `main` is deployed there. `CLAUDE.md`
+("Deployment: Coolify") has the exact procedure.
 
-To point Pages at a different branch or repo, or to set it up fresh
-elsewhere: **Settings → Pages → Source: "Deploy from a branch"**, pick the
-branch and `/ (root)` folder, and save.
+**Moving a device to the new address:** browser storage belongs to a single
+site address, so the new site starts empty on each device. Go to
+**Settings → Sync code** and enter the same code you use today; the data
+comes back from Firebase. A device that never used sync should use
+**Settings → Export/Import Backup** on the old site first.
+
+**GitHub Pages (legacy):** the old copy at
+<https://sdm1130.github.io/mlb-stadium-tracker/> still deploys from the
+frozen `claude/mlb-stadium-tracker-b426yg` branch and no longer gets
+updates. It stays up until every device has moved over; after that, Pages
+can be turned off (**Settings → Pages**) and the repository can go private.
+The repository is public only because free GitHub Pages needed it. There are
+no secrets in this codebase (Firebase web config values are meant to be
+public; see the note in `js/firebase-config.js`).
 
 ## Project structure
 
@@ -111,7 +123,9 @@ js/badges-data.js        Badge/achievement definitions
 js/firebase-config.js    Sync configuration (see above) — already live for this deployment
 js/app.js                App logic (map, modal, passport, badges, sync)
 assets/logos/            Team logo SVGs used on map pins, popups, and passport stamps
-CLAUDE.md                Notes for Claude/any coding agent working in this repo
+CLAUDE.md                Notes for Claude/any coding agent working in this repo (incl. deploy steps)
+Dockerfile               Production image for Coolify (nginx)
+deploy/nginx.conf        nginx server config used by the Dockerfile
 ```
 
 If you're picking this project up with Claude Code (or another coding
