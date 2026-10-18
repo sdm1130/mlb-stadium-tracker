@@ -1,0 +1,6 @@
+# The Dockerfile copies only index.html, css/, js/, assets/ and deploy/nginx.conf.
+.git
+.claude
+*.md
+.DS_Store
+._*
