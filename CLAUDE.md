@@ -72,7 +72,7 @@ to `main`, trigger a Coolify deploy and check it.
 |---|---|
 | URL | https://stadiumtracker.stevenmurphy.net (Cloudflare Access login: Steve and Ethan) |
 | Host | Ubuntu VM `10.0.100.254`, Coolify 4.4.6. SSH: `ssh -i ~/.ssh/claude_vm claude@10.0.100.254` (works only from Steve's laptop at home) |
-| Coolify app | uuid `j7tw4m3j5jpofmufyuodw891`, project `mlb-stadium-tracker`. Builds this repo's `Dockerfile` from `main` through a read-only GitHub deploy key. |
+| Coolify app | uuid `j7tw4m3j5jpofmufyuodw891`, project `mlb-stadium-tracker`. Builds this repo's `Dockerfile` from `main` through a read-only GitHub deploy key. Git URL `ssh://git@ssh.github.com:443/sdm1130/mlb-stadium-tracker.git` (port 443, see "When a deploy fails"). |
 | Container | nginx 1.30.6 (Alpine) serving `index.html`, `css/`, `js/`, `assets/` with `deploy/nginx.conf`. No server-side data and no volume. |
 | Health check | `GET /` |
 | Limits | 128 MB memory, 0.25 CPU |
@@ -141,6 +141,18 @@ ssh -i ~/.ssh/claude_vm claude@10.0.100.254 \
 The result is a JSON array of `{output, hidden}` lines. For runtime and nginx
 logs, use `sudo docker logs <container>`; the container name starts with the
 app uuid.
+
+**`Connection timed out during banner exchange` or `Could not read from remote
+repository`:** on 2026-10-18, GitHub stopped answering SSH on port 22 for the
+home internet address, probably throttling after many deploys. So the
+Coolify app fetches through GitHub's SSH endpoint on port 443
+(`ssh.github.com:443`, same deploy key). If fetches fail again, check that
+the VM gets an SSH greeting; this should print `SSH-2.0-...`:
+
+```bash
+ssh -i ~/.ssh/claude_vm claude@10.0.100.254 \
+  'timeout 10 bash -c "exec 3<>/dev/tcp/ssh.github.com/443; head -c 20 <&3"'
+```
 
 Container notes:
 - **New top-level folders** must be added to the `COPY` lines in the
