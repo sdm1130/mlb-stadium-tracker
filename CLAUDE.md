@@ -70,8 +70,8 @@ to `main`, trigger a Coolify deploy and check it.
 
 | | |
 |---|---|
-| URL | https://stadiumtracker.stevenmurphy.net (Cloudflare Access login, Steve only for now) |
-| Host | Ubuntu VM `10.0.100.106`, Coolify 4.4.6. SSH: `ssh -i ~/.ssh/claude_vm claude@10.0.100.106` (works only from Steve's laptop at home) |
+| URL | https://stadiumtracker.stevenmurphy.net (Cloudflare Access login: Steve and Ethan) |
+| Host | Ubuntu VM `10.0.100.254`, Coolify 4.4.6. SSH: `ssh -i ~/.ssh/claude_vm claude@10.0.100.254` (works only from Steve's laptop at home) |
 | Coolify app | uuid `j7tw4m3j5jpofmufyuodw891`, project `mlb-stadium-tracker`. Builds this repo's `Dockerfile` from `main` through a read-only GitHub deploy key. |
 | Container | nginx 1.30.6 (Alpine) serving `index.html`, `css/`, `js/`, `assets/` with `deploy/nginx.conf`. No server-side data and no volume. |
 | Health check | `GET /` |
@@ -114,7 +114,7 @@ curl -s "${CFH[@]}" $A/deployments/$D \
   | python3 -c 'import json,sys; d=json.load(sys.stdin); print(d["status"], (d.get("commit") or "")[:7])'
 
 # 3. Check the live app from inside the VM (Access blocks anonymous requests from outside)
-ssh -i ~/.ssh/claude_vm claude@10.0.100.106 \
+ssh -i ~/.ssh/claude_vm claude@10.0.100.254 \
   'curl -s -o /dev/null -w "%{http_code}\n" -H "Host: stadiumtracker.stevenmurphy.net" http://localhost:80/'
 ```
 
@@ -134,7 +134,7 @@ The API can't return deploy logs (no `read:sensitive`), so read them from
 Coolify's database over SSH:
 
 ```bash
-ssh -i ~/.ssh/claude_vm claude@10.0.100.106 \
+ssh -i ~/.ssh/claude_vm claude@10.0.100.254 \
   "sudo docker exec coolify-db psql -U coolify -d coolify -tA -c \"select logs from application_deployment_queues where deployment_uuid='$D'\""
 ```
 
@@ -154,9 +154,9 @@ Container notes:
 ### Infrastructure — don't change unless Steve asks
 
 Cloudflare Tunnel `home-apps` routes `stadiumtracker.stevenmurphy.net` to
-Traefik on the VM. The Access app `stadium-tracker` allows only Steve's
-email; adding his son means adding his email to that policy, with Steve's
-approval. There is **no wildcard Access app**, so a new hostname is public
+Traefik on the VM. The Access app `stadium-tracker` allows Steve and his
+son Ethan (`ethanmurphy1120@gmail.com`); adding anyone else means adding their
+email to that policy, with Steve's approval. There is **no wildcard Access app**, so a new hostname is public
 until it has its own Access app; create the Access app before the DNS
 record. How the VM is set up, and why, is documented in
 `/Users/steve/Desktop/setup/hosting-runbook.md`.
